@@ -2,7 +2,10 @@ module github.com/ninoamine/shippercd
 
 go 1.25.6
 
-require sigs.k8s.io/controller-runtime v0.22.4
+require (
+	k8s.io/apimachinery v0.34.1
+	sigs.k8s.io/controller-runtime v0.22.4
+)
 
 require (
 	github.com/beorn7/perks v1.0.1 // indirect
@@ -51,7 +54,6 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	k8s.io/api v0.34.1 // indirect
 	k8s.io/apiextensions-apiserver v0.34.1 // indirect
-	k8s.io/apimachinery v0.34.1 // indirect
 	k8s.io/client-go v0.34.1 // indirect
 	k8s.io/klog/v2 v2.130.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20250710124328-f3f2b991d03b // indirect
