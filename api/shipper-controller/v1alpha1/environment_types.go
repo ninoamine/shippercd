@@ -13,6 +13,8 @@ type EnvironmentStatus struct {
 	Status string `json:"status,omitempty"`
 }
 
+// +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
 
 type Environment struct {
 	metav1.TypeMeta  `json:",inline"`
@@ -21,6 +23,7 @@ type Environment struct {
 	Status EnvironmentStatus `json:"status,omitempty"`
 }
 
+// +kubebuilder:object:root=true
 type EnvironmentList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
