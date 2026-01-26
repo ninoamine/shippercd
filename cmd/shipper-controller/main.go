@@ -7,12 +7,23 @@ import (
 	"os"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 	"github.com/ninoamine/shippercd/internal/controllers/shipper-controller"
+	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
+	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
+	corev1alpha1 "github.com/ninoamine/shippercd/api/shipper-controller/v1alpha1"
+
 )
 
 var (
 	scheme = runtime.NewScheme()
 	setupLog = ctrl.Log.WithName("setup")
 )
+
+func init() {
+	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
+
+	utilruntime.Must(corev1alpha1.AddToScheme(scheme))
+}
+
 
 func main() {
 
