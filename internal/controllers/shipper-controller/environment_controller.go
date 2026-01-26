@@ -36,3 +36,10 @@ func (r *EvironmentReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 	return ctrl.Result{}, nil
 
 }
+
+
+func (r *EvironmentReconciler) SetupWithManager(mgr ctrl.Manager) error {
+	return ctrl.NewControllerManagedBy(mgr).
+		For(&corev1alpha1.Environment{}).
+		Named("environment").Complete(r)
+}

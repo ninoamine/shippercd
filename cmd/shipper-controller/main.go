@@ -6,6 +6,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"os"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
+	"github.com/ninoamine/shippercd/internal/controllers/shipper-controller"
 )
 
 var (
@@ -23,6 +24,14 @@ func main() {
 
 	if err != nil {
 		setupLog.Error(err, "unable to start manager")
+	}
+
+	if err = (&shippercontroller.EvironmentReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err,"unable to create controller", "controller", "Environment")
+		os.Exit(1)
 	}
 
 	setupLog.Info("starting manager")
