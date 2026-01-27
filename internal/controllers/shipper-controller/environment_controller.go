@@ -26,12 +26,19 @@ func (r *EvironmentReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 
 	if err := r.Get(ctx, req.NamespacedName, &environment); err != nil {
 		if apierrors.IsNotFound(err) {
-			logger.Info("Environment resource not found. Ignoring since object must be deleted")
+			logger.Info("Environment resource already deleted", "name", req.Name, "namespace", req.Namespace)
 			return ctrl.Result{}, nil
 		}
 		logger.Error(err, "Failed to get Environment")
 		return ctrl.Result{}, err
 	} 
+
+	if !environment.DeletionTimestamp.IsZero(){
+		logger.Info("Handling deletion of Environment", "name", req.Name, "namespace", req.Namespace)
+		return ctrl.Result{}, nil
+	}
+
+	logger.Info("Reconciling Environment", "name", req.Name, "namespace", req.Namespace)
 
 	return ctrl.Result{}, nil
 
