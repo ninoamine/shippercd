@@ -1,3 +1,5 @@
+// +kubebuilder:object:generate=true
+// +groupName=core.envcd.io
 package v1alpha1
 
 import (
