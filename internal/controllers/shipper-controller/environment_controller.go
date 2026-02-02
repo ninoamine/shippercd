@@ -13,12 +13,12 @@ import (
 
 
 
-type EvironmentReconciler struct {
+type EnvironmentReconciler struct {
 	client.Client
 	Scheme *runtime.Scheme
 }
 
-func (r *EvironmentReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error){
+func (r *EnvironmentReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error){
 
 	logger := log.FromContext(ctx)
 
@@ -45,7 +45,7 @@ func (r *EvironmentReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 }
 
 
-func (r *EvironmentReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *EnvironmentReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&corev1alpha1.Environment{}).
 		Named("environment").Complete(r)
