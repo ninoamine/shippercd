@@ -58,3 +58,74 @@ func TestReconcile_EnvironmentExists(t *testing.T){
 	assert.Equal(t, ctrl.Result{}, res)
 
 }
+
+func TestReconcile_EnvironmentNotFound(t *testing.T){
+	scheme := setupScheme(t)
+
+	fakeClient := fake.NewClientBuilder().
+		WithScheme(scheme).
+		Build()
+	
+
+	reconciler := &shippercontroller.EnvironmentReconciler{
+		Client: fakeClient,
+		Scheme: scheme,
+	}
+
+	req := ctrl.Request{
+		NamespacedName: types.NamespacedName{
+			Name: "nonexistent-environment",
+			Namespace: "default",
+		},
+	}
+
+	res, err := reconciler.Reconcile(context.Background(), req)
+	assert.NoError(t, err)
+	assert.Equal(t, ctrl.Result{}, res)
+}
+
+
+func TestReconcile_EnvironmentBeingDeleted(t *testing.T) {
+	scheme := setupScheme(t)
+
+	now := metav1.Now()
+
+	environment := &corev1alpha1.Environment{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:              "deleting-environment",
+			Namespace:         "default",
+			DeletionTimestamp: &now,
+			Finalizers:        []string{"environment.shippercd.io/finalizer"},
+		},
+	}
+
+	fakeClient := fake.NewClientBuilder().
+		WithScheme(scheme).
+		WithObjects(environment).
+		Build()
+
+	reconciler := &shippercontroller.EnvironmentReconciler{
+		Client: fakeClient,
+		Scheme: scheme,
+	}
+
+	req := ctrl.Request{
+		NamespacedName: types.NamespacedName{
+			Name:      "deleting-environment",
+			Namespace: "default",
+		},
+	}
+
+	res, err := reconciler.Reconcile(context.Background(), req)
+
+	assert.NoError(t, err)
+	assert.Equal(t, ctrl.Result{}, res)
+
+	updated := &corev1alpha1.Environment{}
+	err = fakeClient.Get(context.Background(), types.NamespacedName{
+		Name:      "deleting-environment",
+		Namespace: "default",
+	}, updated)
+
+	assert.Error(t, err)
+}
