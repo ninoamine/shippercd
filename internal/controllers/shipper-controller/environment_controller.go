@@ -9,17 +9,17 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 	corev1alpha1 "github.com/ninoamine/shippercd/api/shipper-controller/v1alpha1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
+const environmentFinalizer = "environment.shippercd.io/finalizer"
 
-
-type EvironmentReconciler struct {
+type EnvironmentReconciler struct {
 	client.Client
 	Scheme *runtime.Scheme
 }
 
-func (r *EvironmentReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error){
-
+func (r *EnvironmentReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
 	var environment corev1alpha1.Environment
@@ -31,21 +31,41 @@ func (r *EvironmentReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 		}
 		logger.Error(err, "Failed to get Environment")
 		return ctrl.Result{}, err
-	} 
+	}
 
-	if !environment.DeletionTimestamp.IsZero(){
-		logger.Info("Handling deletion of Environment", "name", req.Name, "namespace", req.Namespace)
+	if environment.DeletionTimestamp.IsZero() {
+
+		if !controllerutil.ContainsFinalizer(&environment, environmentFinalizer) {
+			logger.Info("Adding finalizer to Environment", "name", environment.Name)
+
+			controllerutil.AddFinalizer(&environment, environmentFinalizer)
+			if err := r.Update(ctx, &environment); err != nil {
+				return ctrl.Result{}, err
+			}
+
+			return ctrl.Result{}, nil
+		}
+
+		logger.Info("Reconciling Environment normally", "name", environment.Name)
 		return ctrl.Result{}, nil
 	}
 
-	logger.Info("Reconciling Environment", "name", req.Name, "namespace", req.Namespace)
+	if controllerutil.ContainsFinalizer(&environment, environmentFinalizer) {
+
+		logger.Info("Handling deletion of Environment", "name", environment.Name)
+
+		controllerutil.RemoveFinalizer(&environment, environmentFinalizer)
+		if err := r.Update(ctx, &environment); err != nil {
+			return ctrl.Result{}, err
+		}
+	}
 
 	return ctrl.Result{}, nil
-
 }
 
 
-func (r *EvironmentReconciler) SetupWithManager(mgr ctrl.Manager) error {
+
+func (r *EnvironmentReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&corev1alpha1.Environment{}).
 		Named("environment").Complete(r)

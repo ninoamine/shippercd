@@ -37,7 +37,7 @@ func main() {
 		setupLog.Error(err, "unable to start manager")
 	}
 
-	if err = (&shippercontroller.EvironmentReconciler{
+	if err = (&shippercontroller.EnvironmentReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
