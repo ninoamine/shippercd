@@ -3,7 +3,7 @@ name: Unit Tests
 on:
   pull_request:
     branches:
-      - main   # ou master selon ta branche cible
+      - master
 
 jobs:
   test:
