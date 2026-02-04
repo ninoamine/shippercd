@@ -1,25 +1,25 @@
-name: CI
+name: Unit Tests
 
 on:
   pull_request:
-    branches: [ master ]
+    branches:
+      - main   # ou master selon ta branche cible
 
 jobs:
-
   test:
-    name: Run tests
-    if: github.event_name == 'pull_request'
+    name: Run unit tests
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
           go-version: '1.25'
 
-      - name: Cache Go
+      - name: Cache Go modules
         uses: actions/cache@v4
         with:
           path: |
@@ -27,10 +27,8 @@ jobs:
             ~/.cache/go-build
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
 
-      - name: Install golangci-lint
-        run: |
-          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh \
-          | sh -s -- -b $(go env GOPATH)/bin v1.56.2
+      - name: Download dependencies
+        run: go mod download
 
-      - name: Run tests (includes lint via Makefile)
+      - name: Run tests
         run: make test
