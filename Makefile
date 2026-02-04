@@ -15,6 +15,6 @@ lint: fmt vet
 
 
 .PHONY: test
-test: lint
+test:
 	@echo "Running tests..."
 	go test -v ./internal/controllers/...
