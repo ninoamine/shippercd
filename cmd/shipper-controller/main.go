@@ -1,20 +1,18 @@
 package main
 
-
 import (
-	ctrl "sigs.k8s.io/controller-runtime"
-	"k8s.io/apimachinery/pkg/runtime"
-	"os"
-	"sigs.k8s.io/controller-runtime/pkg/log/zap"
+	corev1alpha1 "github.com/ninoamine/shippercd/api/shipper-controller/v1alpha1"
 	"github.com/ninoamine/shippercd/internal/controllers/shipper-controller"
+	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
-	corev1alpha1 "github.com/ninoamine/shippercd/api/shipper-controller/v1alpha1"
-
+	"os"
+	ctrl "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 )
 
 var (
-	scheme = runtime.NewScheme()
+	scheme   = runtime.NewScheme()
 	setupLog = ctrl.Log.WithName("setup")
 )
 
@@ -24,13 +22,12 @@ func init() {
 	utilruntime.Must(corev1alpha1.AddToScheme(scheme))
 }
 
-
 func main() {
 
 	ctrl.SetLogger(zap.New(zap.UseDevMode(true)))
 
-	mgr, err := ctrl.NewManager( ctrl.GetConfigOrDie(), ctrl.Options{
-		Scheme: scheme,	
+	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
+		Scheme: scheme,
 	})
 
 	if err != nil {
@@ -41,7 +38,7 @@ func main() {
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err,"unable to create controller", "controller", "Environment")
+		setupLog.Error(err, "unable to create controller", "controller", "Environment")
 		os.Exit(1)
 	}
 

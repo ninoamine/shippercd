@@ -1,21 +1,19 @@
 package shippercontroller_test
 
-
 import (
 	"context"
 	"testing"
 
-	"k8s.io/apimachinery/pkg/runtime"
 	"github.com/stretchr/testify/assert"
-	"sigs.k8s.io/controller-runtime/pkg/client/fake"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
+	"sigs.k8s.io/controller-runtime/pkg/client/fake"
 
 	corev1alpha1 "github.com/ninoamine/shippercd/api/shipper-controller/v1alpha1"
 	shippercontroller "github.com/ninoamine/shippercd/internal/controllers/shipper-controller"
-	ctrl "sigs.k8s.io/controller-runtime"
 	"k8s.io/apimachinery/pkg/types"
+	ctrl "sigs.k8s.io/controller-runtime"
 )
-
 
 func setupScheme(t *testing.T) *runtime.Scheme {
 	scheme := runtime.NewScheme()
@@ -24,13 +22,12 @@ func setupScheme(t *testing.T) *runtime.Scheme {
 	return scheme
 }
 
-
-func TestReconcile_EnvironmentExists(t *testing.T){
+func TestReconcile_EnvironmentExists(t *testing.T) {
 	scheme := setupScheme(t)
 
 	environment := &corev1alpha1.Environment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: 	"test-environment",
+			Name:      "test-environment",
 			Namespace: "default",
 		},
 	}
@@ -40,7 +37,6 @@ func TestReconcile_EnvironmentExists(t *testing.T){
 		WithObjects(environment).
 		Build()
 
-	
 	reconciler := &shippercontroller.EnvironmentReconciler{
 		Client: fakeClient,
 		Scheme: scheme,
@@ -48,7 +44,7 @@ func TestReconcile_EnvironmentExists(t *testing.T){
 
 	req := ctrl.Request{
 		NamespacedName: types.NamespacedName{
-			Name: "test-environment",
+			Name:      "test-environment",
 			Namespace: "default",
 		},
 	}
@@ -59,13 +55,12 @@ func TestReconcile_EnvironmentExists(t *testing.T){
 
 }
 
-func TestReconcile_EnvironmentNotFound(t *testing.T){
+func TestReconcile_EnvironmentNotFound(t *testing.T) {
 	scheme := setupScheme(t)
 
 	fakeClient := fake.NewClientBuilder().
 		WithScheme(scheme).
 		Build()
-	
 
 	reconciler := &shippercontroller.EnvironmentReconciler{
 		Client: fakeClient,
@@ -74,7 +69,7 @@ func TestReconcile_EnvironmentNotFound(t *testing.T){
 
 	req := ctrl.Request{
 		NamespacedName: types.NamespacedName{
-			Name: "nonexistent-environment",
+			Name:      "nonexistent-environment",
 			Namespace: "default",
 		},
 	}
@@ -83,7 +78,6 @@ func TestReconcile_EnvironmentNotFound(t *testing.T){
 	assert.NoError(t, err)
 	assert.Equal(t, ctrl.Result{}, res)
 }
-
 
 func TestReconcile_EnvironmentBeingDeleted(t *testing.T) {
 	scheme := setupScheme(t)

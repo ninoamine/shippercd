@@ -1,15 +1,14 @@
 package shippercontroller
 
-
 import (
 	"context"
-	"sigs.k8s.io/controller-runtime/pkg/client"
-	"k8s.io/apimachinery/pkg/runtime"
-	ctrl "sigs.k8s.io/controller-runtime"
-	"sigs.k8s.io/controller-runtime/pkg/log"
 	corev1alpha1 "github.com/ninoamine/shippercd/api/shipper-controller/v1alpha1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/runtime"
+	ctrl "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
+	"sigs.k8s.io/controller-runtime/pkg/log"
 )
 
 const environmentFinalizer = "environment.shippercd.io/finalizer"
@@ -62,8 +61,6 @@ func (r *EnvironmentReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 
 	return ctrl.Result{}, nil
 }
-
-
 
 func (r *EnvironmentReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
