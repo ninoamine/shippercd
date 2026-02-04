@@ -1,13 +1,10 @@
 package v1alpha1
 
-
 import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-
-type EnvironmentSpec struct {}
-
+type EnvironmentSpec struct{}
 
 type EnvironmentStatus struct {
 	Status string `json:"status,omitempty"`
@@ -17,10 +14,10 @@ type EnvironmentStatus struct {
 // +kubebuilder:subresource:status
 
 type Environment struct {
-	metav1.TypeMeta  `json:",inline"`
+	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	Spec EnvironmentSpec `json:"spec,omitempty"`
-	Status EnvironmentStatus `json:"status,omitempty"`
+	Spec              EnvironmentSpec   `json:"spec,omitempty"`
+	Status            EnvironmentStatus `json:"status,omitempty"`
 }
 
 // +kubebuilder:object:root=true
