@@ -84,13 +84,15 @@ Use this checklist as you work through the phase. Check off each item when done.
 
 **What to do**: Open and skim the generated files. Focus on:
 
-- `main.go` — how the manager is created and started
+- `cmd/main.go` — how the manager is created and started
 - `Makefile` — targets like `generate`, `manifests`, `install`, `run`
 - `config/` — CRD bases, RBAC, default manager deployment
 
 **Why it matters**: Understanding the layout helps you know where to add code and what each part does. You will extend these files, not replace them.
 
 **What to learn**: Kubebuilder uses markers (comments) in Go files to know where to inject code. Do not remove `+kubebuilder:scaffold` markers.
+
+📖 **Beginner-friendly deep dive**: See [Phase 1, Step 1.4: Exploring the Kubebuilder Structure](step1.4-exploring-kubebuilder-structure.md) for a detailed walkthrough of the generated structure and the Go concepts used (packages, imports, flags, scheme, manager, scaffold markers).
 
 ---
 
