@@ -8,4 +8,14 @@ layout:
 - go.kubebuilder.io/v4
 projectName: shippercd
 repo: github.com/ninoamine/shippercd
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: shippercd.io
+  group: core
+  kind: Environment
+  path: github.com/ninoamine/shippercd/api/v1alpha1
+  version: v1alpha1
 version: "3"

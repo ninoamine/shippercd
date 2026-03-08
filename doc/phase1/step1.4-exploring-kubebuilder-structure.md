@@ -284,6 +284,8 @@ This file is used by Kubebuilder's CLI and plugins. It stores domain, project na
 | **Pointer** | `*T` is a pointer to `T`. Used to avoid copying and to allow mutation. |
 | **Method** | A function on a type: `func (r *Reconciler) Reconcile(...)`. |
 
+📖 **Full reference**: See [Go Concepts for Kubernetes Operators](../go-concepts/concepts.md) for detailed explanations of these and more (struct tags, embedding, context, interfaces).
+
 ---
 
 ## What Happens When You Run `make run`?
