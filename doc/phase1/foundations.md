@@ -102,7 +102,9 @@ Use this checklist as you work through the phase. Check off each item when done.
 
 **Why it matters**: This generates the Environment CRD types and a controller skeleton. The Environment will be your main entity — users declare databases and topics in it.
 
-**What to learn**: In Kubernetes, an API group + version + kind uniquely identify a resource type. Your Environment will be `Environment` in group `core.envcd.io`, version `v1alpha1`.
+**What to learn**: In Kubernetes, an API group + version + kind uniquely identify a resource type. Your Environment will be `Environment` in group `core.shippercd.io`, version `v1alpha1`.
+
+📖 **Beginner-friendly guide**: See [Phase 1, Step 1.5: Creating the Environment API](step1.5-creating-the-environment-api.md) for concepts (API group, version, kind), what the command does, what gets generated, and a checklist so you can do it yourself.
 
 ---
 
