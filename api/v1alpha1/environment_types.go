@@ -29,9 +29,9 @@ type MongoDBDatabase struct {
 }
 
 type KafkaTopic struct {
-	Name string `json:"name"`
-	Partitions int `json:"partitions"`
-	ReplicationFactor int `json:"replicationFactor"`
+	Name              string `json:"name"`
+	Partitions        int    `json:"partitions"`
+	ReplicationFactor int    `json:"replicationFactor"`
 }
 
 // EnvironmentSpec defines the desired state of Environment
@@ -47,13 +47,13 @@ type EnvironmentSpec struct {
 
 // EnvironmentStatus defines the observed state of Environment.
 type EnvironmentStatus struct {
-	Ready bool `json:"ready"`
-	Message string `json:"message"`
-	Error string `json:"error"`
+	Ready            bool     `json:"ready"`
+	Message          string   `json:"message"`
+	Error            string   `json:"error"`
 	CreatedResources []string `json:"createdResources"`
 	DeletedResources []string `json:"deletedResources"`
 	UpdatedResources []string `json:"updatedResources"`
-	FailedResources []string `json:"failedResources"`
+	FailedResources  []string `json:"failedResources"`
 	PendingResources []string `json:"pendingResources"`
 }
 

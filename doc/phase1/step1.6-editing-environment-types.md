@@ -97,9 +97,10 @@ The marker `// +kubebuilder:validation:Required` must be used for required field
 
 ## After Editing
 
-1. Run `make generate` — Regenerates DeepCopy methods for your new types.
+1. Run `make generate` — Regenerates DeepCopy methods for your new types in `zz_generated.deepcopy.go`. This is required when you add or change struct fields; without it, the generated code will be out of date and `make lint` may fail.
 2. Run `make manifests` — Regenerates CRD YAML from your types and markers.
-3. Fix any errors — Typos in tags, unknown markers, or missing imports.
+3. Run `make fmt` (or `gofmt -w api/`) — Ensures struct fields are properly aligned; `make lint` checks formatting.
+4. Fix any errors — Typos in tags, unknown markers, or missing imports.
 
 ---
 
@@ -111,6 +112,7 @@ The marker `// +kubebuilder:validation:Required` must be used for required field
 - [ ] `EnvironmentStatus` has fields to reflect state (Ready, Message, lists, etc.)
 - [ ] `// +kubebuilder:validation:Required` on required fields, not `// +required`
 - [ ] `make generate` and `make manifests` run without errors
+- [ ] `make fmt` and `make lint` pass (generated code up to date, formatting correct)
 
 ---
 
