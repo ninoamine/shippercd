@@ -119,6 +119,8 @@ Use this checklist as you work through the phase. Check off each item when done.
 
 **What to learn**: CRD types use struct tags for serialization (JSON) and for OpenAPI validation. Kubebuilder adds markers for CRD generation (e.g. `+kubebuilder:subresource:status`).
 
+📖 **Beginner-friendly guide**: See [Phase 1, Step 1.6: Editing Environment Types](step1.6-editing-environment-types.md) for Spec/Status design, struct tags, markers, and verification checklist.
+
 ---
 
 ### 1.7 Run make generate and make manifests

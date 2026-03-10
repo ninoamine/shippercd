@@ -20,42 +20,41 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
+type PostgreSQLDatabase struct {
+	Name string `json:"name"`
+}
+
+type MongoDBDatabase struct {
+	Name string `json:"name"`
+}
+
+type KafkaTopic struct {
+	Name              string `json:"name"`
+	Partitions        int    `json:"partitions"`
+	ReplicationFactor int    `json:"replicationFactor"`
+}
 
 // EnvironmentSpec defines the desired state of Environment
 type EnvironmentSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-	// The following markers will use OpenAPI v3 schema to validate the value
-	// More info: https://book.kubebuilder.io/reference/markers/crd-validation.html
-
-	// foo is an example field of Environment. Edit environment_types.go to remove/update
+	Name string `json:"name"`
 	// +optional
-	Foo *string `json:"foo,omitempty"`
+	PostgreSQLDatabases []PostgreSQLDatabase `json:"postgresqlDatabases"`
+	// +optional
+	MongoDBDatabases []MongoDBDatabase `json:"mongodbDatabases"`
+	// +optional
+	KafkaTopics []KafkaTopic `json:"kafkaTopics"`
 }
 
 // EnvironmentStatus defines the observed state of Environment.
 type EnvironmentStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-
-	// For Kubernetes API conventions, see:
-	// https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#typical-status-properties
-
-	// conditions represent the current state of the Environment resource.
-	// Each condition has a unique type and reflects the status of a specific aspect of the resource.
-	//
-	// Standard condition types include:
-	// - "Available": the resource is fully functional
-	// - "Progressing": the resource is being created or updated
-	// - "Degraded": the resource failed to reach or maintain its desired state
-	//
-	// The status of each condition is one of True, False, or Unknown.
-	// +listType=map
-	// +listMapKey=type
-	// +optional
-	Conditions []metav1.Condition `json:"conditions,omitempty"`
+	Ready            bool     `json:"ready"`
+	Message          string   `json:"message"`
+	Error            string   `json:"error"`
+	CreatedResources []string `json:"createdResources"`
+	DeletedResources []string `json:"deletedResources"`
+	UpdatedResources []string `json:"updatedResources"`
+	FailedResources  []string `json:"failedResources"`
+	PendingResources []string `json:"pendingResources"`
 }
 
 // +kubebuilder:object:root=true
@@ -70,7 +69,7 @@ type Environment struct {
 	metav1.ObjectMeta `json:"metadata,omitzero"`
 
 	// spec defines the desired state of Environment
-	// +required
+	// +kubebuilder:validation:Required
 	Spec EnvironmentSpec `json:"spec"`
 
 	// status defines the observed state of Environment

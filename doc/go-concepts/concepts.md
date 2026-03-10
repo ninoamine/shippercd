@@ -125,8 +125,11 @@ Fields can have **tags** — metadata in backticks for serialization and tooling
 Name string `json:"name"`
 ```
 
-- `json:"name"` — used when marshalling/unmarshalling JSON (and YAML, which is a superset of JSON)
-- Other tags like `kubebuilder:validation:Required` are used by controller-gen for CRD generation
+- `json:"name"` — used when marshalling/unmarshalling JSON (and YAML). **No space** after the colon: `json:"name"` ✓, `json: "name"` ✗.
+- `omitempty` — omit the field when it is the zero value (empty string, nil, 0).
+- `omitzero` — (Go 1.24+) similar to omitempty; omits zero values. Useful for optional fields without pointers.
+
+**Kubebuilder markers** (for CRDs) go in **comments above** fields, not in struct tags: `// +kubebuilder:validation:Required`. Do not use `// +required` — it is not recognized by controller-gen.
 
 ---
 
@@ -137,8 +140,8 @@ Go supports **embedding** — one struct can embed another to reuse its fields:
 ```go
 type Environment struct {
     metav1.TypeMeta   `json:",inline"`
-    metav1.ObjectMeta `json:"metadata,omitempty"`
-    Spec   EnvironmentSpec   `json:"spec,omitempty"`
+    metav1.ObjectMeta `json:"metadata,omitempty"`   // or omitzero (Go 1.24+)
+    Spec   EnvironmentSpec   `json:"spec"`
     Status EnvironmentStatus `json:"status,omitempty"`
 }
 ```
@@ -228,7 +231,7 @@ Use sparingly — often you should handle the error instead of discarding it.
 | Error handling | Check `err`; no exceptions.                                                |
 | `init()`       | Runs when package loads, before `main()`.                                  |
 | Struct         | Groups fields. Spec/Status in CRDs are structs.                             |
-| Struct tags    | `` `json:"name"` `` for serialization; Kubebuilder markers for CRDs.        |
+| Struct tags    | `` `json:"name"` `` (no space); omitempty/omitzero for optional; Kubebuilder markers in comments above fields. |
 | Embedding      | One struct embeds another to reuse its fields.                              |
 | Pointer        | `*T` references a value; `&x` takes address.                              |
 | Method         | `func (r *T) Name()` — function on a type.                                  |
