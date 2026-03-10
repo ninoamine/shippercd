@@ -37,8 +37,11 @@ type KafkaTopic struct {
 // EnvironmentSpec defines the desired state of Environment
 type EnvironmentSpec struct {
 	Name string `json:"name"`
+	// +optional
 	PostgreSQLDatabases []PostgreSQLDatabase `json:"postgresqlDatabases"`
+	// +optional
 	MongoDBDatabases []MongoDBDatabase `json:"mongodbDatabases"`
+	// +optional
 	KafkaTopics []KafkaTopic `json:"kafkaTopics"`
 }
 
