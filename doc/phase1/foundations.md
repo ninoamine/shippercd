@@ -131,6 +131,8 @@ Use this checklist as you work through the phase. Check off each item when done.
 
 **What to learn**: Kubebuilder relies on code generation. You edit the source types; the tooling generates the rest. Always run these after changing types.
 
+📖 **Beginner-friendly guide**: See [Phase 1, Step 1.7: Running make generate and make manifests](step1.7-generate-and-manifests.md) for what each target does, what files are updated, and how to fix common errors.
+
 ---
 
 ### 1.8 Create the KafkaTopic API
