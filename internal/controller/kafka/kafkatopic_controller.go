@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package controller
+package kafka
 
 import (
 	"context"
@@ -24,29 +24,29 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 
-	corev1alpha1 "github.com/ninoamine/shippercd/api/v1alpha1"
+	kafkav1alpha1 "github.com/ninoamine/shippercd/api/kafka/v1alpha1"
 )
 
-// EnvironmentReconciler reconciles a Environment object
-type EnvironmentReconciler struct {
+// KafkaTopicReconciler reconciles a KafkaTopic object
+type KafkaTopicReconciler struct {
 	client.Client
 	Scheme *runtime.Scheme
 }
 
-// +kubebuilder:rbac:groups=core.shippercd.io,resources=environments,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=core.shippercd.io,resources=environments/status,verbs=get;update;patch
-// +kubebuilder:rbac:groups=core.shippercd.io,resources=environments/finalizers,verbs=update
+// +kubebuilder:rbac:groups=kafka.shippercd.io,resources=kafkatopics,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=kafka.shippercd.io,resources=kafkatopics/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=kafka.shippercd.io,resources=kafkatopics/finalizers,verbs=update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
 // TODO(user): Modify the Reconcile function to compare the state specified by
-// the Environment object against the actual cluster state, and then
+// the KafkaTopic object against the actual cluster state, and then
 // perform operations to make the cluster state reflect the state specified by
 // the user.
 //
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.23.1/pkg/reconcile
-func (r *EnvironmentReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+func (r *KafkaTopicReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = logf.FromContext(ctx)
 
 	// TODO(user): your logic here
@@ -55,9 +55,9 @@ func (r *EnvironmentReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 }
 
 // SetupWithManager sets up the controller with the Manager.
-func (r *EnvironmentReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *KafkaTopicReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&corev1alpha1.Environment{}).
-		Named("environment").
+		For(&kafkav1alpha1.KafkaTopic{}).
+		Named("kafka-kafkatopic").
 		Complete(r)
 }

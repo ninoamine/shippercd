@@ -40,7 +40,7 @@ Use this checklist as you work through the phase. Check off each item when done.
 - [ ] **1.5** Create the Environment API with `kubebuilder create api`
 - [ ] **1.6** Edit Environment types: add spec (databases, topics, limits) and status
 - [ ] **1.7** Run `make generate` and `make manifests`
-- [ ] **1.8** Create the KafkaTopic API with `kubebuilder create api`
+- [ ] **1.8** Enable multi-group layout, migrate Environment API, then create the KafkaTopic API
 - [ ] **1.9** Run `make generate` and `make manifests` again
 - [ ] **1.10** Implement minimal reconcile logic in the KafkaTopic controller
 - [ ] **1.11** Run `make install` to install CRDs into your cluster
@@ -137,11 +137,39 @@ Use this checklist as you work through the phase. Check off each item when done.
 
 ### 1.8 Create the KafkaTopic API
 
-**What to do**: Run the create-api command for KafkaTopic. Use a different group (e.g. kafka) so it lives under `kafka.envcd.io`.
+**What to do**: Kubebuilder uses a single-group layout by default. Creating KafkaTopic in a different group (`kafka`) requires enabling multi-group and migrating your existing Environment API. Follow these steps:
+
+1. **Enable multi-group mode**:
+   ```bash
+   kubebuilder edit --multigroup=true
+   ```
+
+2. **Migrate the Environment API to multi-group layout**:
+   - Move APIs: `mkdir -p api/core && mv api/v1alpha1 api/core/`
+   - Move controllers: `mkdir -p internal/controller/core && mv internal/controller/*.go internal/controller/core/`
+   - Update all import paths: `api/v1alpha1` → `api/core/v1alpha1`, and `internal/controller` → `internal/controller/core` (in `cmd/main.go`, controllers, and any tests)
+   - Update the `path` field in `PROJECT` for the Environment resource: `.../api/core/v1alpha1`
+   - In `internal/controller/core/suite_test.go`, add one more `".."` to `CRDDirectoryPaths` (e.g. `filepath.Join("..", "..", "..", "config", "crd", "bases")`)
+
+3. **Regenerate and verify**:
+   ```bash
+   make manifests
+   make generate
+   make test
+   ```
+
+4. **Create the KafkaTopic API**:
+   ```bash
+   kubebuilder create api --group kafka --version v1alpha1 --kind KafkaTopic
+   ```
+
+For full migration details, see the [Kubebuilder multi-group migration guide](https://kubebuilder.io/migration/multi-group.html).
 
 **Why it matters**: KafkaTopic represents a single Kafka topic. Later, the Environment controller will create KafkaTopic CRs; the Kafka controller will watch them and provision topics in Kafka.
 
-**What to learn**: You can have multiple API groups in one project. Each gets its own directory under `api/`.
+**What to learn**: Kubebuilder scaffolds single-group projects by default. Multiple API groups (e.g. `core` and `kafka`) require multi-group layout, where each group gets its own directory: `api/<group>/<version>/` and `internal/controller/<group>/`.
+
+**Alternative (simpler)**: If you prefer to keep single-group layout, you can create KafkaTopic in the `core` group instead: `kubebuilder create api --group core --version v1alpha1 --kind KafkaTopic`. The resource will live under `core.shippercd.io` alongside Environment.
 
 ---
 
@@ -224,6 +252,7 @@ Do not call Kafka yet — just make the controller react and update status.
 
 ## Troubleshooting
 
+- **"multiple groups are not allowed by default"**: You are creating an API in a new group (e.g. `kafka`) while the project uses single-group layout. Enable multi-group first: `kubebuilder edit --multigroup=true`, then migrate the existing Environment API as described in Step 1.8.
 - **Controller does not start**: Check that your kubeconfig points to a valid cluster and that you have permissions to create/watch the CRDs.
 - **Reconcile not called**: Ensure the CRD is installed and the resource has the correct `apiVersion` and `kind`.
 - **make generate fails**: Check for syntax errors in your types and that all required markers are present.

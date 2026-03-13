@@ -35,8 +35,10 @@ import (
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
-	corev1alpha1 "github.com/ninoamine/shippercd/api/v1alpha1"
-	"github.com/ninoamine/shippercd/internal/controller"
+	corev1alpha1 "github.com/ninoamine/shippercd/api/core/v1alpha1"
+	kafkav1alpha1 "github.com/ninoamine/shippercd/api/kafka/v1alpha1"
+	controller "github.com/ninoamine/shippercd/internal/controller/core"
+	kafkacontroller "github.com/ninoamine/shippercd/internal/controller/kafka"
 	// +kubebuilder:scaffold:imports
 )
 
@@ -49,6 +51,7 @@ func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 
 	utilruntime.Must(corev1alpha1.AddToScheme(scheme))
+	utilruntime.Must(kafkav1alpha1.AddToScheme(scheme))
 	// +kubebuilder:scaffold:scheme
 }
 
@@ -183,6 +186,13 @@ func main() {
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "Failed to create controller", "controller", "Environment")
+		os.Exit(1)
+	}
+	if err := (&kafkacontroller.KafkaTopicReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "Failed to create controller", "controller", "KafkaTopic")
 		os.Exit(1)
 	}
 	// +kubebuilder:scaffold:builder

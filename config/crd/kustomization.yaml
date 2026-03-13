@@ -3,6 +3,7 @@
 # It should be run by config/default
 resources:
 - bases/core.shippercd.io_environments.yaml
+- bases/kafka.shippercd.io_kafkatopics.yaml
 # +kubebuilder:scaffold:crdkustomizeresource
 
 patches:
