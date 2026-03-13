@@ -6,6 +6,7 @@ cliVersion: 4.13.0
 domain: shippercd.io
 layout:
 - go.kubebuilder.io/v4
+multigroup: true
 projectName: shippercd
 repo: github.com/ninoamine/shippercd
 resources:
@@ -16,6 +17,15 @@ resources:
   domain: shippercd.io
   group: core
   kind: Environment
-  path: github.com/ninoamine/shippercd/api/v1alpha1
+  path: github.com/ninoamine/shippercd/api/core/v1alpha1
+  version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: shippercd.io
+  group: kafka
+  kind: KafkaTopic
+  path: github.com/ninoamine/shippercd/api/kafka/v1alpha1
   version: v1alpha1
 version: "3"

@@ -30,3 +30,29 @@ rules:
   - get
   - patch
   - update
+- apiGroups:
+  - kafka.shippercd.io
+  resources:
+  - kafkatopics
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - kafka.shippercd.io
+  resources:
+  - kafkatopics/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - kafka.shippercd.io
+  resources:
+  - kafkatopics/status
+  verbs:
+  - get
+  - patch
+  - update
