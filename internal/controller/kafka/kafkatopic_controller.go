@@ -25,6 +25,9 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 
 	kafkav1alpha1 "github.com/ninoamine/shippercd/api/kafka/v1alpha1"
+	"k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/api/meta"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // KafkaTopicReconciler reconciles a KafkaTopic object
@@ -47,9 +50,27 @@ type KafkaTopicReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.23.1/pkg/reconcile
 func (r *KafkaTopicReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = logf.FromContext(ctx)
+	log := logf.FromContext(ctx)
+	log.Info("Reconciling KafkaTopic", "name", req.Name, "namespace", req.Namespace)
 
-	// TODO(user): your logic here
+	var kafkaTopic kafkav1alpha1.KafkaTopic
+
+	err := r.Get(ctx, req.NamespacedName, &kafkaTopic)
+	if err != nil {
+		if errors.IsNotFound(err) {
+			return ctrl.Result{}, nil
+		}
+		return ctrl.Result{}, err
+	}
+	meta.SetStatusCondition(&kafkaTopic.Status.Conditions, metav1.Condition{
+		Type:    "Ready",
+		Status:  metav1.ConditionTrue,
+		Reason:  "Reconciled",
+		Message: "Reconciled successfully",
+	})
+	if err := r.Status().Update(ctx, &kafkaTopic); err != nil {
+		return ctrl.Result{}, err
+	}
 
 	return ctrl.Result{}, nil
 }

@@ -240,6 +240,12 @@ Use sparingly — often you should handle the error instead of discarding it.
 
 ---
 
+## Related Docs
+
+- **[controller-reconcile-concepts.md](controller-reconcile-concepts.md)** — Go concepts specific to the controller and Reconcile function (embedding, `ctrl.Request`, method chaining, client usage).
+
+---
+
 ## Further Reading
 
 - [A Tour of Go](https://go.dev/tour/) — official interactive tutorial

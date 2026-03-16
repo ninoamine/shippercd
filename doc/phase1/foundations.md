@@ -196,6 +196,8 @@ Do not call Kafka yet — just make the controller react and update status.
 
 **What to learn**: Reconcile receives a request (namespace + name). You fetch the object, check its state, and optionally update it or create/update other resources. Returning an error triggers a retry. Returning success with `Requeue: true` schedules another reconcile after a delay.
 
+📖 **Beginner-friendly guide**: See [Phase 1, Step 1.10: Implementing Minimal Reconcile Logic](step1.10-implementing-minimal-reconcile-logic.md) for concepts, where to work, what to implement (without exact code), and a checklist.
+
 ---
 
 ### 1.11 Run make install
