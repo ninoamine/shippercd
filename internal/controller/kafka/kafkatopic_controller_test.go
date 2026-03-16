@@ -22,10 +22,10 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/types"
-	"sigs.k8s.io/controller-runtime/pkg/reconcile"
-
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
 	kafkav1alpha1 "github.com/ninoamine/shippercd/api/kafka/v1alpha1"
 )
@@ -77,8 +77,14 @@ var _ = Describe("KafkaTopic Controller", func() {
 				NamespacedName: typeNamespacedName,
 			})
 			Expect(err).NotTo(HaveOccurred())
-			// TODO(user): Add more specific assertions depending on your controller's reconciliation logic.
-			// Example: If you expect a certain status condition after reconciliation, verify it here.
+
+			By("Verifying the status condition is set")
+			Expect(k8sClient.Get(ctx, typeNamespacedName, kafkatopic)).To(Succeed())
+			readyCondition := meta.FindStatusCondition(kafkatopic.Status.Conditions, "Ready")
+			Expect(readyCondition).NotTo(BeNil())
+			Expect(readyCondition.Status).To(Equal(metav1.ConditionTrue))
+			Expect(readyCondition.Reason).To(Equal("Reconciled"))
+			Expect(readyCondition.Message).To(Equal("Reconciled successfully"))
 		})
 	})
 })

@@ -148,6 +148,45 @@ Keep the existing `return ctrl.Result{}, nil` at the end. Your logic runs before
 
 ---
 
+### Step 6: Update the Test (recommended)
+
+The scaffolded test only checks that `Reconcile` returns no error. Now that your controller sets a Ready condition, you should add assertions to verify it.
+
+**File to edit**: `internal/controller/kafka/kafkatopic_controller_test.go` (or `internal/controller/kafkatopic_controller_test.go` for single-group layout).
+
+**Add import**: `"k8s.io/apimachinery/pkg/api/meta"` — you need `meta.FindStatusCondition` to look up a condition by type.
+
+**In the `It("should successfully reconcile the resource", ...)` block**, after the existing `Expect(err).NotTo(HaveOccurred())`:
+
+1. **Re-fetch the KafkaTopic** from the cluster using `k8sClient.Get(ctx, typeNamespacedName, kafkatopic)`. The reconcile updated the status, so you need the latest version.
+
+2. **Find the Ready condition** with `meta.FindStatusCondition(kafkatopic.Status.Conditions, "Ready")`. It returns a pointer to the condition or `nil` if not found.
+
+3. **Add assertions**:
+   - The condition is not nil (it was set)
+   - `Status` equals `metav1.ConditionTrue`
+   - `Reason` equals `"Reconciled"`
+   - `Message` equals `"Reconciled successfully"`
+
+Use `Expect(...).NotTo(BeNil())` and `Expect(...).To(Equal(...))` from Gomega, as in the rest of the test.
+
+**Structure**:
+```go
+By("Verifying the status condition is set")
+Expect(k8sClient.Get(ctx, typeNamespacedName, kafkatopic)).To(Succeed())
+readyCondition := meta.FindStatusCondition(kafkatopic.Status.Conditions, "Ready")
+Expect(readyCondition).NotTo(BeNil())
+Expect(readyCondition.Status).To(Equal(metav1.ConditionTrue))
+Expect(readyCondition.Reason).To(Equal("Reconciled"))
+Expect(readyCondition.Message).To(Equal("Reconciled successfully"))
+```
+
+Remove the TODO comment about adding assertions — you have replaced it with real checks.
+
+📖 **Test concepts**: See [Test Concepts](../go-concepts/test-concepts.md) for Ginkgo, Gomega, envtest, and the Go patterns used in controller tests.
+
+---
+
 ## Code Skeleton (fill in the blanks)
 
 Here is the structure of the `Reconcile` function. Use it as a guide for the order of operations:
@@ -231,7 +270,7 @@ For Phase 1, returning `ctrl.Result{}, nil` after your logging (and optional sta
 | `sigs.k8s.io/controller-runtime/pkg/log` | Logger from context |
 | `sigs.k8s.io/controller-runtime/pkg/client` | Already available via `r.Client` |
 | `k8s.io/apimachinery/pkg/types` | `NamespacedName` for Get |
-| `k8s.io/apimachinery/pkg/api/meta` | `SetStatusCondition` for conditions |
+| `k8s.io/apimachinery/pkg/api/meta` | `SetStatusCondition` for conditions; `FindStatusCondition` for tests |
 | `k8s.io/apimachinery/pkg/apis/meta/v1` | `metav1.Condition`, `metav1.Now()` |
 
 ---
@@ -243,6 +282,7 @@ For Phase 1, returning `ctrl.Result{}, nil` after your logging (and optional sta
 - [ ] (Optional) Fetch the KafkaTopic using `r.Get` and a `NamespacedName`
 - [ ] (Optional) Update Status — either add a condition or a message field
 - [ ] Return `ctrl.Result{}, nil` on success
+- [ ] Update the controller test to verify the Ready condition is set (Step 6)
 - [ ] Run `make generate` and `make manifests` if you changed the types
 - [ ] Run `make test` to ensure tests pass
 - [ ] Run `make run`, apply a KafkaTopic, and verify you see your log line (and status if you added it)
