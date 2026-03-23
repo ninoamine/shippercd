@@ -191,6 +191,8 @@ shippercd/
 
 ### Phase 1: Foundations with Kubebuilder (weeks 1–2)
 
+📖 **Detailed guide**: [Phase 1 Foundations](doc/phase1/foundations.md) — step-by-step with checklists and troubleshooting.
+
 - **Install Kubebuilder** ([installation guide](https://book.kubebuilder.io/quick-start.html#installation))
 - **Initialize project**: `kubebuilder init --domain envcd.io`
 - **Create Environment API**: `kubebuilder create api --group core --version v1alpha1 --kind Environment --resource --controller`
@@ -205,6 +207,8 @@ shippercd/
 ---
 
 ### Phase 2: Environment Controller (weeks 2–3)
+
+📖 **Detailed guide**: [Phase 2 Foundations](doc/phase2/foundations.md) — step-by-step with checklists and troubleshooting.
 
 - **Scaffold remaining APIs** (if not done): `kubebuilder create api` for PostgreSQL and MongoDB
 - Implement `controllers/environment_controller.go` (Kubebuilder already created the skeleton):
