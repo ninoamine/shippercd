@@ -18,6 +18,10 @@ Phase 2 turns the Environment controller into the **parent** that creates and ma
 
 By the end, you will understand how parent-child relationships work in Kubernetes, how ownership enables garbage collection, and how finalizers allow cleanup before resource deletion.
 
+### PostgreSQL and MongoDB: credentials stay off the CR
+
+For **PostgreSQL** and **MongoDB** child CRs, treat the Spec as **what to provision** (for example, the logical database name). Put **host, port, and credentials** in a **Kubernetes Secret** that the **technology controller** reads—via operator configuration (environment variables, flags, or a fixed Secret name in the manager namespace)—not on every `PostgresqlDatabase` / `MongodbDatabase` object. That matches **one controller Deployment per PaaS**: one shared connection to the managed cluster, many CRs that only name the databases (or collections) to create. Phase 3 implements the Secret lookup and client connection; Phase 2 only needs the types and docs aligned with that split.
+
 ---
 
 ## Prerequisites
@@ -36,9 +40,9 @@ Before starting, ensure you have completed **Phase 1**:
 Use this checklist as you work through the phase. Check off each item when done.
 
 - [ ] **2.1** Scaffold PostgreSQL API with `kubebuilder create api`
-- [ ] **2.2** Edit PostgresqlDatabase types: add spec (name, connection refs) and status
+- [ ] **2.2** Edit PostgresqlDatabase types: spec names the DB only; connection via operator Secret; add status
 - [ ] **2.3** Scaffold MongoDB API with `kubebuilder create api`
-- [ ] **2.4** Edit MongodbDatabase types: add spec (name, connection refs) and status
+- [ ] **2.4** Edit MongodbDatabase types: spec names the DB only; connection via operator Secret; add status
 - [ ] **2.5** Run `make generate` and `make manifests`
 - [ ] **2.6** Update Environment controller RBAC for child resources (KafkaTopic, PostgresqlDatabase, MongodbDatabase)
 - [ ] **2.7** Implement reconciliation: list desired children from Environment.Spec, create/update KafkaTopic CRs
@@ -71,11 +75,11 @@ kubebuilder create api --group postgresql --version v1alpha1 --kind PostgresqlDa
 
 ### 2.2 Edit PostgresqlDatabase Types
 
-**What to do**: Open `api/postgresql/v1alpha1/postgresqldatabase_types.go`. Add to the Spec: `Name` (string), and optionally connection details (e.g. `ConnectionSecretRef` pointing to a Secret with host, port, credentials). Add to the Status: `Ready`, `Message`, `Error`, and optionally `Conditions` using `metav1.Condition`.
+**What to do**: Open `api/postgresql/v1alpha1/postgresqldatabase_types.go`. Add to the Spec only **`Name`** (required string): the PostgreSQL **database name** to create (distinct from `metadata.name` if you want the Kubernetes object name and the DB name to differ). Do **not** add `ConnectionSecretRef`, inline passwords, or host/port on the CR: the **PostgreSQL controller** (Phase 3) loads connection details from a **Kubernetes Secret** you wire into the operator (env vars, CLI flags, or a convention such as a Secret in the manager namespace). With **one PostgreSQL manager per PaaS**, that single Secret describes the admin connection to the shared Postgres instance; every `PostgresqlDatabase` CR only requests another logical database. Add Status fields such as `Ready`, `Message`, `Error`, and `Conditions` (`metav1.Condition`) as needed. After editing, run `make generate` and `make manifests`. When you implement provisioning, add **RBAC** on the PostgreSQL controller to **get/list/watch Secrets** (and only the namespaces/names you need).
 
-**Why it matters**: The Spec defines what the user (or Environment controller) wants. The Status is updated by the PostgreSQL controller in Phase 3. For Phase 2, the Environment controller only creates the CR; the Status can stay empty.
+**Why it matters**: Users and the Environment controller only declare *which* database exists; sensitive connection material stays in Secrets and is read by the operator, not duplicated on every CR.
 
-**What to learn**: Keep the Spec minimal for now. Connection details can be added in Phase 3 when provisioning logic is implemented.
+**What to learn**: Split “desired database name” (declarative API) from “how to reach Postgres” (operator config + Secret).
 
 ---
 
@@ -95,11 +99,11 @@ kubebuilder create api --group mongodb --version v1alpha1 --kind MongodbDatabase
 
 ### 2.4 Edit MongodbDatabase Types
 
-**What to do**: Edit `api/mongodb/v1alpha1/mongodbdatabase_types.go`. Add Spec fields: `Name`, and optionally `ConnectionSecretRef`. Add Status: `Ready`, `Message`, `Error`, `Conditions`.
+**What to do**: Edit `api/mongodb/v1alpha1/mongodbdatabase_types.go` using the **same pattern as §2.2**: Spec holds **`Name`** (or the logical database name your Mongo flow needs) only—**no** credentials or connection refs on the CR. The **MongoDB controller** reads a **Kubernetes Secret** via operator configuration (**one MongoDB manager per PaaS**). Add Status: `Ready`, `Message`, `Error`, `Conditions` to mirror PostgreSQL. Run `make generate` and `make manifests`. Plan **RBAC** for Secrets on the Mongo controller when you add provisioning.
 
-**Why it matters**: Mirrors the PostgresqlDatabase structure. The Environment controller creates both with similar patterns.
+**Why it matters**: Same mental model as PostgreSQL: Environment declares children; technology controllers share one connection per PaaS.
 
-**What to learn**: Reuse the same status shape (Ready, Message, Error, Conditions) across technology CRDs for consistency.
+**What to learn**: Reuse the same Spec/Status split and status shape across technology CRDs for consistency.
 
 ---
 
