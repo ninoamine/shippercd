@@ -56,3 +56,29 @@ rules:
   - get
   - patch
   - update
+- apiGroups:
+  - postgresql.shippercd.io
+  resources:
+  - postgresqldatabases
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - postgresql.shippercd.io
+  resources:
+  - postgresqldatabases/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - postgresql.shippercd.io
+  resources:
+  - postgresqldatabases/status
+  verbs:
+  - get
+  - patch
+  - update

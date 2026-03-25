@@ -25,37 +25,21 @@ import (
 
 // PostgresqlDatabaseSpec defines the desired state of PostgresqlDatabase
 type PostgresqlDatabaseSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-	// The following markers will use OpenAPI v3 schema to validate the value
-	// More info: https://book.kubebuilder.io/reference/markers/crd-validation.html
-
-	// foo is an example field of PostgresqlDatabase. Edit postgresqldatabase_types.go to remove/update
+	Name string `json:"name"`
 	// +optional
-	Foo *string `json:"foo,omitempty"`
+	Extensions []string `json:"extensions"`
 }
 
 // PostgresqlDatabaseStatus defines the observed state of PostgresqlDatabase.
 type PostgresqlDatabaseStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-
-	// For Kubernetes API conventions, see:
-	// https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#typical-status-properties
-
-	// conditions represent the current state of the PostgresqlDatabase resource.
-	// Each condition has a unique type and reflects the status of a specific aspect of the resource.
-	//
-	// Standard condition types include:
-	// - "Available": the resource is fully functional
-	// - "Progressing": the resource is being created or updated
-	// - "Degraded": the resource failed to reach or maintain its desired state
-	//
-	// The status of each condition is one of True, False, or Unknown.
-	// +listType=map
-	// +listMapKey=type
-	// +optional
-	Conditions []metav1.Condition `json:"conditions,omitempty"`
+	Ready            bool     `json:"ready"`
+	Message          string   `json:"message"`
+	Error            string   `json:"error"`
+	CreatedResources []string `json:"createdResources"`
+	DeletedResources []string `json:"deletedResources"`
+	UpdatedResources []string `json:"updatedResources"`
+	FailedResources  []string `json:"failedResources"`
+	PendingResources []string `json:"pendingResources"`
 }
 
 // +kubebuilder:object:root=true
