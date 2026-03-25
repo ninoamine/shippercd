@@ -1,0 +1,9 @@
+apiVersion: postgresql.shippercd.io/v1alpha1
+kind: PostgresqlDatabase
+metadata:
+  labels:
+    app.kubernetes.io/name: shippercd
+    app.kubernetes.io/managed-by: kustomize
+  name: postgresqldatabase-sample
+spec:
+  # TODO(user): Add fields here

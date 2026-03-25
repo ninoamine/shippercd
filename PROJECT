@@ -28,4 +28,13 @@ resources:
   kind: KafkaTopic
   path: github.com/ninoamine/shippercd/api/kafka/v1alpha1
   version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: shippercd.io
+  group: postgresql
+  kind: PostgresqlDatabase
+  path: github.com/ninoamine/shippercd/api/postgresql/v1alpha1
+  version: v1alpha1
 version: "3"
