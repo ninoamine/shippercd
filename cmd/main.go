@@ -37,8 +37,10 @@ import (
 
 	corev1alpha1 "github.com/ninoamine/shippercd/api/core/v1alpha1"
 	kafkav1alpha1 "github.com/ninoamine/shippercd/api/kafka/v1alpha1"
+	postgresqlv1alpha1 "github.com/ninoamine/shippercd/api/postgresql/v1alpha1"
 	controller "github.com/ninoamine/shippercd/internal/controller/core"
 	kafkacontroller "github.com/ninoamine/shippercd/internal/controller/kafka"
+	postgresqlcontroller "github.com/ninoamine/shippercd/internal/controller/postgresql"
 	// +kubebuilder:scaffold:imports
 )
 
@@ -52,6 +54,7 @@ func init() {
 
 	utilruntime.Must(corev1alpha1.AddToScheme(scheme))
 	utilruntime.Must(kafkav1alpha1.AddToScheme(scheme))
+	utilruntime.Must(postgresqlv1alpha1.AddToScheme(scheme))
 	// +kubebuilder:scaffold:scheme
 }
 
@@ -193,6 +196,13 @@ func main() {
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "Failed to create controller", "controller", "KafkaTopic")
+		os.Exit(1)
+	}
+	if err := (&postgresqlcontroller.PostgresqlDatabaseReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "Failed to create controller", "controller", "PostgresqlDatabase")
 		os.Exit(1)
 	}
 	// +kubebuilder:scaffold:builder

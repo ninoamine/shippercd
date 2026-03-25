@@ -2,4 +2,5 @@
 resources:
 - core_v1alpha1_environment.yaml
 - kafka_v1alpha1_kafkatopic.yaml
+- postgresql_v1alpha1_postgresqldatabase.yaml
 # +kubebuilder:scaffold:manifestskustomizesamples

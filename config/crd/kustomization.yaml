@@ -4,6 +4,7 @@
 resources:
 - bases/core.shippercd.io_environments.yaml
 - bases/kafka.shippercd.io_kafkatopics.yaml
+- bases/postgresql.shippercd.io_postgresqldatabases.yaml
 # +kubebuilder:scaffold:crdkustomizeresource
 
 patches:
