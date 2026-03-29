@@ -3,7 +3,8 @@ kind: KafkaTopic
 metadata:
   labels:
     app.kubernetes.io/name: shippercd
-    app.kubernetes.io/managed-by: kustomize
   name: kafkatopic-sample
 spec:
-  # TODO(user): Add fields here
+  name: test-topic
+  partitions: 1
+  replicationFactor: 1

@@ -39,25 +39,28 @@ spec:
           spec:
             description: spec defines the desired state of KafkaTopic
             properties:
-              foo:
-                description: foo is an example field of KafkaTopic. Edit kafkatopic_types.go
-                  to remove/update
+              name:
+                description: Name is the topic name in Kafka
                 type: string
+              partitions:
+                description: Partitions is the number of partitions for the topic
+                minimum: 1
+                type: integer
+              replicationFactor:
+                description: ReplicationFactor is the replication factor for the topic
+                minimum: 1
+                type: integer
+            required:
+            - name
+            - partitions
+            - replicationFactor
             type: object
           status:
             description: status defines the observed state of KafkaTopic
             properties:
               conditions:
-                description: |-
-                  conditions represent the current state of the KafkaTopic resource.
-                  Each condition has a unique type and reflects the status of a specific aspect of the resource.
-
-                  Standard condition types include:
-                  - "Available": the resource is fully functional
-                  - "Progressing": the resource is being created or updated
-                  - "Degraded": the resource failed to reach or maintain its desired state
-
-                  The status of each condition is one of True, False, or Unknown.
+                description: Conditions represent the latest available observations
+                  of the topic's state
                 items:
                   description: Condition contains details for one aspect of the current
                     state of this API Resource.
@@ -113,9 +116,32 @@ spec:
                   - type
                   type: object
                 type: array
-                x-kubernetes-list-map-keys:
-                - type
-                x-kubernetes-list-type: map
+              createdResources:
+                items:
+                  type: string
+                type: array
+              deletedResources:
+                items:
+                  type: string
+                type: array
+              error:
+                type: string
+              failedResources:
+                items:
+                  type: string
+                type: array
+              message:
+                type: string
+              pendingResources:
+                items:
+                  type: string
+                type: array
+              ready:
+                type: boolean
+              updatedResources:
+                items:
+                  type: string
+                type: array
             type: object
         required:
         - spec
