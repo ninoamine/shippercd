@@ -23,15 +23,15 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-// PostgresqlDatabaseSpec defines the desired state of PostgresqlDatabase
-type PostgresqlDatabaseSpec struct {
+// MongodbDatabaseSpec defines the desired state of MongodbDatabase
+type MongodbDatabaseSpec struct {
 	Name string `json:"name"`
 	// +optional
-	Extensions []string `json:"extensions"`
+	Collections []string `json:"collections"`
 }
 
-// PostgresqlDatabaseStatus defines the observed state of PostgresqlDatabase.
-type PostgresqlDatabaseStatus struct {
+// MongodbDatabaseStatus defines the observed state of MongodbDatabase.
+type MongodbDatabaseStatus struct {
 	// +optional
 	Ready bool `json:"ready,omitempty"`
 	// +optional
@@ -59,32 +59,32 @@ type PostgresqlDatabaseStatus struct {
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 
-// PostgresqlDatabase is the Schema for the postgresqldatabases API
-type PostgresqlDatabase struct {
+// MongodbDatabase is the Schema for the mongodbdatabases API
+type MongodbDatabase struct {
 	metav1.TypeMeta `json:",inline"`
 
 	// metadata is a standard object metadata
 	// +optional
 	metav1.ObjectMeta `json:"metadata,omitzero"`
 
-	// spec defines the desired state of PostgresqlDatabase
+	// spec defines the desired state of MongodbDatabase
 	// +required
-	Spec PostgresqlDatabaseSpec `json:"spec"`
+	Spec MongodbDatabaseSpec `json:"spec"`
 
-	// status defines the observed state of PostgresqlDatabase
+	// status defines the observed state of MongodbDatabase
 	// +optional
-	Status PostgresqlDatabaseStatus `json:"status,omitzero"`
+	Status MongodbDatabaseStatus `json:"status,omitzero"`
 }
 
 // +kubebuilder:object:root=true
 
-// PostgresqlDatabaseList contains a list of PostgresqlDatabase
-type PostgresqlDatabaseList struct {
+// MongodbDatabaseList contains a list of MongodbDatabase
+type MongodbDatabaseList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitzero"`
-	Items           []PostgresqlDatabase `json:"items"`
+	Items           []MongodbDatabase `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&PostgresqlDatabase{}, &PostgresqlDatabaseList{})
+	SchemeBuilder.Register(&MongodbDatabase{}, &MongodbDatabaseList{})
 }

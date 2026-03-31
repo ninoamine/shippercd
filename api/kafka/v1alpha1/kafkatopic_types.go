@@ -25,33 +25,33 @@ import (
 
 // KafkaTopicSpec defines the desired state of KafkaTopic
 type KafkaTopicSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-	// The following markers will use OpenAPI v3 schema to validate the value
-	// More info: https://book.kubebuilder.io/reference/markers/crd-validation.html
-
-	// foo is an example field of KafkaTopic. Edit kafkatopic_types.go to remove/update
+	Name              string `json:"name"`
+	ReplicationFactor int    `json:"replicationFactor"`
+	Partitions        int    `json:"partitions"`
 	// +optional
-	Foo *string `json:"foo,omitempty"`
+	Config map[string]string `json:"config,omitempty"`
 }
 
 // KafkaTopicStatus defines the observed state of KafkaTopic.
 type KafkaTopicStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-
-	// For Kubernetes API conventions, see:
-	// https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#typical-status-properties
-
+	// +optional
+	Ready bool `json:"ready,omitempty"`
+	// +optional
+	Message string `json:"message,omitempty"`
+	// +optional
+	Error string `json:"error,omitempty"`
+	// +optional
+	CreatedResources []string `json:"createdResources,omitempty"`
+	// +optional
+	DeletedResources []string `json:"deletedResources,omitempty"`
+	// +optional
+	UpdatedResources []string `json:"updatedResources,omitempty"`
+	// +optional
+	FailedResources []string `json:"failedResources,omitempty"`
+	// +optional
+	PendingResources []string `json:"pendingResources,omitempty"`
 	// conditions represent the current state of the KafkaTopic resource.
-	// Each condition has a unique type and reflects the status of a specific aspect of the resource.
-	//
-	// Standard condition types include:
-	// - "Available": the resource is fully functional
-	// - "Progressing": the resource is being created or updated
-	// - "Degraded": the resource failed to reach or maintain its desired state
-	//
-	// The status of each condition is one of True, False, or Unknown.
+	// Standard condition types include Ready, Progressing, Degraded, etc.
 	// +listType=map
 	// +listMapKey=type
 	// +optional
