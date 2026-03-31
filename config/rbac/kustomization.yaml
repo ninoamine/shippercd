@@ -22,6 +22,9 @@ resources:
 # default, aiding admins in cluster management. Those roles are
 # not used by the shippercd itself. You can comment the following lines
 # if you do not want those helpers be installed with your Project.
+- mongodb_mongodbdatabase_admin_role.yaml
+- mongodb_mongodbdatabase_editor_role.yaml
+- mongodb_mongodbdatabase_viewer_role.yaml
 - postgresql_postgresqldatabase_admin_role.yaml
 - postgresql_postgresqldatabase_editor_role.yaml
 - postgresql_postgresqldatabase_viewer_role.yaml

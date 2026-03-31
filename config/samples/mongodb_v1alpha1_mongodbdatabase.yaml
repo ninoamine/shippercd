@@ -1,0 +1,9 @@
+apiVersion: mongodb.shippercd.io/v1alpha1
+kind: MongodbDatabase
+metadata:
+  labels:
+    app.kubernetes.io/name: shippercd
+    app.kubernetes.io/managed-by: kustomize
+  name: mongodbdatabase-sample
+spec:
+  # TODO(user): Add fields here

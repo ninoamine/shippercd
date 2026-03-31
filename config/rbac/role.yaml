@@ -57,6 +57,32 @@ rules:
   - patch
   - update
 - apiGroups:
+  - mongodb.shippercd.io
+  resources:
+  - mongodbdatabases
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - mongodb.shippercd.io
+  resources:
+  - mongodbdatabases/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - mongodb.shippercd.io
+  resources:
+  - mongodbdatabases/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
   - postgresql.shippercd.io
   resources:
   - postgresqldatabases
