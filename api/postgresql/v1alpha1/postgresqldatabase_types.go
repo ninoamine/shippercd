@@ -32,14 +32,28 @@ type PostgresqlDatabaseSpec struct {
 
 // PostgresqlDatabaseStatus defines the observed state of PostgresqlDatabase.
 type PostgresqlDatabaseStatus struct {
-	Ready            bool     `json:"ready"`
-	Message          string   `json:"message"`
-	Error            string   `json:"error"`
-	CreatedResources []string `json:"createdResources"`
-	DeletedResources []string `json:"deletedResources"`
-	UpdatedResources []string `json:"updatedResources"`
-	FailedResources  []string `json:"failedResources"`
-	PendingResources []string `json:"pendingResources"`
+	// +optional
+	Ready bool `json:"ready,omitempty"`
+	// +optional
+	Message string `json:"message,omitempty"`
+	// +optional
+	Error string `json:"error,omitempty"`
+	// +optional
+	CreatedResources []string `json:"createdResources,omitempty"`
+	// +optional
+	DeletedResources []string `json:"deletedResources,omitempty"`
+	// +optional
+	UpdatedResources []string `json:"updatedResources,omitempty"`
+	// +optional
+	FailedResources []string `json:"failedResources,omitempty"`
+	// +optional
+	PendingResources []string `json:"pendingResources,omitempty"`
+	// conditions represent the current state of the KafkaTopic resource.
+	// Standard condition types include Ready, Progressing, Degraded, etc.
+	// +listType=map
+	// +listMapKey=type
+	// +optional
+	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
 
 // +kubebuilder:object:root=true
